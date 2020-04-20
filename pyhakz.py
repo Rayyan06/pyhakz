@@ -1,72 +1,36 @@
 import pyautogui
 import time
 import os
+from PIL import ImageGrab
 import numpy as np
+import cv2
+#import tensorflow as tf
 
-q_table = np.zeros([])
+#q_table = np.zeros([])
 
-URL = 'https://shellshock.io/'
-STARTING_DELAY = 2
-LOADING_TIME = 20
+#MOVEMENT_SPEED = 1
+NUMBER_OF_BULLETS = 1
 
 
-PLAY_BUTTON = (515, 500)
-PLAY_GAME = (1000, 500)
+EGG_PICTURE = 'egg.png'
+PLAY_BUTTON = 'PLAY_BUTTON.png'
+#PLAY_GAME = (1000, 500)
 
-time.sleep(STARTING_DELAY)
-class Controller:
 
-	def __init__(self):
-		self.target = (100, 100)
-		self.open()
+def screen_record():
+    last_time = time.time()
+    while True:
+        # 800x600 windowed mode
+        printscreen_pil =  ImageGrab.grab(bbox=(0,40,800,640))
 
-	def open(self):
-		# Launch Chrome
-		pyautogui.hotkey('win', 'r')
-		pyautogui.typewrite('chrome')
-		pyautogui.hotkey('enter')
-		pyautogui.click (1700, 722)
-		pyautogui.typewrite(URL)
-		pyautogui.hotkey('enter')
-		time.sleep(LOADING_TIME)
-		self.click(PLAY_BUTTON)
-		time.sleep(LOADING_TIME)
-		self.click(PLAY_GAME)
+        print('loop took {} seconds'.format(time.time()-last_time))
+        last_time = time.time()
+        #printscreen_numpy = np.array(printscreen_pillow.getdata(),dtype='uint8').reshape((printscreen_pillow.size[1],printscreen_pillow.size[0],3))
+        #cv2.imshow('window',printscreen_numpy)
+        #if cv2.waitKey(25) & 0xFF == ord('q'):
+        #    cv2.destroyAllWindows()
+        #    break
 
-	def getCoordinate(self):
-		while True:
-			print(pyautogui.position())
-	#def reload
-	def click(self, xy):
-		pyautogui.click(xy[0], xy[1])
-	def shoot(self):
-		pyautogui.click(self.target[0], self.target[1])
-
-	def reload(self):
-		pyautogui.hotkey('r')
-
-	def move(self, direction, duration=1):
-		pyautogui.keyDown(direction)
-		time.sleep(duration)
-
-	def jump(self):
-		self.move('space', duration=1)
-		#pyautogui.keyUp(direction)
-
-	def findTarget(self):
-		#pyautogui.
-		pass
-
-	def dodge(self):
-		self.jump()
-		self.move('s')
-
-def main():
-	controller = Controller()
-	controller.move(direction='w', duration=2)
-	controller.dodge()
 
 if __name__ =="__main__":
-	main()
-
-
+    screen_record()

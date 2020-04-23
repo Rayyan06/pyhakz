@@ -1,72 +1,41 @@
 import pyautogui
 import time
 import os
+from PIL import ImageGrab
 import numpy as np
+import cv2
+from experiment import EggFinder
 
-q_table = np.zeros([])
-
-URL = 'https://shellshock.io/'
-STARTING_DELAY = 2
-LOADING_TIME = 20
+def process_img(image):
+    processed_img = image
+    return processed_img
 
 
-PLAY_BUTTON = (515, 500)
-PLAY_GAME = (1000, 500)
-
-time.sleep(STARTING_DELAY)
-class Controller:
-
-	def __init__(self):
-		self.target = (100, 100)
-		self.open()
-
-	def open(self):
-		# Launch Chrome
-		pyautogui.hotkey('win', 'r')
-		pyautogui.typewrite('chrome')
-		pyautogui.hotkey('enter')
-		pyautogui.click (1700, 722)
-		pyautogui.typewrite(URL)
-		pyautogui.hotkey('enter')
-		time.sleep(LOADING_TIME)
-		self.click(PLAY_BUTTON)
-		time.sleep(LOADING_TIME)
-		self.click(PLAY_GAME)
-
-	def getCoordinate(self):
-		while True:
-			print(pyautogui.position())
-	#def reload
-	def click(self, xy):
-		pyautogui.click(xy[0], xy[1])
-	def shoot(self):
-		pyautogui.click(self.target[0], self.target[1])
-
-	def reload(self):
-		pyautogui.hotkey('r')
-
-	def move(self, direction, duration=1):
-		pyautogui.keyDown(direction)
-		time.sleep(duration)
-
-	def jump(self):
-		self.move('space', duration=1)
-		#pyautogui.keyUp(direction)
-
-	def findTarget(self):
-		#pyautogui.
-		pass
-
-	def dodge(self):
-		self.jump()
-		self.move('s')
+    """# convert to gray
+    processed_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # edge detection
+    processed_img = cv2.Canny(processed_img, threshold1=200, threshold2=300)
+    return processed_img"""
 
 def main():
-	controller = Controller()
-	controller.move(direction='w', duration=2)
-	controller.dodge()
+    last_time = time.time()
+    eggfinder = EggFinder()
+    while True:
+        screen =  np.array(ImageGrab.grab(bbox=(0,40,800,640)))
+        eggs = eggfinder.findEggs(screen)
+        print(eggs)
+        print('loop took {} seconds'.format(time.time()-last_time))
+        last_time = time.time()
+        new_screen = process_img(screen)
+        #egg_loc = read_image(new_screen)
+        #print(egg_loc)
+        cv2.imshow('window',screen)
+        #cv2.imshow('window', updateScreen(new_screen))
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
+            break
 
-if __name__ =="__main__":
-	main()
+main()
 
-
+from IPython.display import Image
+Image(filename='edge-detection.png')
